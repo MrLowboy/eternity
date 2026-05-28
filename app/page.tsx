@@ -11,6 +11,7 @@ export default function Home() {
         </div>
         <div className="flex gap-8 text-xs tracking-widest uppercase text-[#d4aa5a]/60">
           <a href="#how" className="hover:text-[#d4aa5a] transition-colors">How it works</a>
+          <Link href="/pricing" className="hover:text-[#d4aa5a] transition-colors">Pricing</Link>
           <a href="#waitlist" className="hover:text-[#d4aa5a] transition-colors">Join waitlist</a>
           <Link href="/login" className="hover:text-[#d4aa5a] transition-colors text-[#d4aa5a]">Sign in</Link>
         </div>
@@ -29,8 +30,8 @@ export default function Home() {
           <Link href="/signup" className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-8 py-4 rounded-sm hover:opacity-90 transition-opacity">
             Begin your story →
           </Link>
-          <Link href="/login" className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors">
-            Sign in
+          <Link href="/pricing" className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors">
+            See pricing
           </Link>
         </div>
       </section>
@@ -75,6 +76,11 @@ export default function Home() {
       {/* Footer */}
       <footer className="flex items-center justify-between px-10 py-8">
         <div className="font-serif text-sm tracking-widest uppercase text-[#d4aa5a]/30">Eternity</div>
+        <div className="flex gap-6 text-xs tracking-widest uppercase text-[#f5ede0]/20">
+          <Link href="/pricing" className="hover:text-[#d4aa5a]/40 transition-colors">Pricing</Link>
+          <Link href="/login" className="hover:text-[#d4aa5a]/40 transition-colors">Sign in</Link>
+          <Link href="/signup" className="hover:text-[#d4aa5a]/40 transition-colors">Sign up</Link>
+        </div>
         <div className="text-xs text-[#f5ede0]/15 tracking-widest">© 2026 Eternity · All rights reserved</div>
       </footer>
 
