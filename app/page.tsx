@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#0d0b08] text-[#f5ede0] font-sans">
@@ -10,6 +12,7 @@ export default function Home() {
         <div className="flex gap-8 text-xs tracking-widest uppercase text-[#d4aa5a]/60">
           <a href="#how" className="hover:text-[#d4aa5a] transition-colors">How it works</a>
           <a href="#waitlist" className="hover:text-[#d4aa5a] transition-colors">Join waitlist</a>
+          <Link href="/login" className="hover:text-[#d4aa5a] transition-colors text-[#d4aa5a]">Sign in</Link>
         </div>
       </nav>
 
@@ -22,9 +25,14 @@ export default function Home() {
         <p className="text-[#f5ede0]/50 text-lg font-light max-w-md mb-10 leading-relaxed">
           Transform your photographs, videos, voices, and stories into a documentary that lives beyond you — a gift to every generation that follows.
         </p>
-        <a href="#waitlist" className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-8 py-4 rounded-sm hover:opacity-90 transition-opacity">
-          Begin your story →
-        </a>
+        <div className="flex gap-4 items-center">
+          <Link href="/signup" className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-8 py-4 rounded-sm hover:opacity-90 transition-opacity">
+            Begin your story →
+          </Link>
+          <Link href="/login" className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors">
+            Sign in
+          </Link>
+        </div>
       </section>
 
       {/* How it works */}
