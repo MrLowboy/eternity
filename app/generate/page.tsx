@@ -1,13 +1,36 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 
+const loadingMessages = [
+  "Reading your life story...",
+  "Gathering memories from loved ones...",
+  "Finding the moments that matter most...",
+  "Weaving your narrative together...",
+  "Crafting your opening chapter...",
+  "Bringing your story to life...",
+  "Adding the final touches...",
+  "Almost ready...",
+];
+
 export default function Generate() {
   const [generating, setGenerating] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [script, setScript] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (!generating) return;
+    let index = 0;
+    setLoadingMessage(loadingMessages[0]);
+    const interval = setInterval(() => {
+      index = (index + 1) % loadingMessages.length;
+      setLoadingMessage(loadingMessages[index]);
+    }, 8000);
+    return () => clearInterval(interval);
+  }, [generating]);
 
   async function handleGenerate() {
     setGenerating(true);
@@ -72,14 +95,25 @@ export default function Generate() {
           Claude will read your life story and the memories shared by your loved ones to craft a cinematic documentary script just for you.
         </p>
 
-        {!script && (
+        {!script && !generating && (
           <button
             onClick={handleGenerate}
-            disabled={generating}
-            className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-8 py-4 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-8 py-4 rounded-sm hover:opacity-90 transition-opacity"
           >
-            {generating ? "Writing your story..." : "Generate my documentary →"}
+            Generate my documentary →
           </button>
+        )}
+
+        {generating && (
+          <div className="flex flex-col items-center justify-center py-20 gap-6">
+            <div className="w-12 h-12 border border-[#d4aa5a]/30 border-t-[#d4aa5a] rounded-full animate-spin"></div>
+            <p className="font-serif text-xl font-light text-[#f5ede0]/60 italic animate-pulse">
+              {loadingMessage}
+            </p>
+            <p className="text-xs text-[#f5ede0]/20 tracking-widest uppercase">
+              This takes about a minute — your story deserves care
+            </p>
+          </div>
         )}
 
         {error && (
