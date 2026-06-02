@@ -35,7 +35,7 @@ export default function Generate() {
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers: data.answers }),
+      body: JSON.stringify({ answers: data.answers, userId: user.id }),
     });
 
     const result = await response.json();
@@ -69,7 +69,7 @@ export default function Generate() {
           Your <em className="text-[#e8c87a]">documentary</em>
         </h1>
         <p className="text-[#f5ede0]/40 text-sm leading-relaxed mb-12">
-          Claude will read your life story and craft a cinematic documentary script just for you.
+          Claude will read your life story and the memories shared by your loved ones to craft a cinematic documentary script just for you.
         </p>
 
         {!script && (

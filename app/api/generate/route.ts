@@ -1,8 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function POST(request: NextRequest) {
   try {
-    const { answers } = await request.json();
+    const { answers, userId } = await request.json();
+
+    // Fetch contributions from family and friends
+    const { data: contributions } = await supabase
+      .from("contributions")
+      .select("contributor_name, message")
+      .eq("owner_id", userId);
+
+    const contributionsText = contributions && contributions.length > 0
+      ? contributions.map((c) => `${c.contributor_name}: ${c.message}`).join("\n\n")
+      : "No contributions yet.";
+
+    const prompt = `You are a world class documentary filmmaker and storyteller. Based on the following life story answers and memories shared by loved ones, write a beautiful, moving documentary script.
+
+Structure it with:
+- An opening narration that captures the essence of their life
+- 6 chapters: Early Life, Family, Love, Career, Life Lessons, Legacy
+- Weave in the memories shared by friends and family naturally
+- A closing narration that ties everything together
+
+Make it deeply personal, warm, and cinematic. Write it as a narrator would speak it. Use specific details from their answers.
+
+THEIR LIFE STORY ANSWERS:
+${answers}
+
+MEMORIES FROM LOVED ONES:
+${contributionsText}
+
+Write the documentary script now:`;
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -12,28 +46,21 @@ export async function POST(request: NextRequest) {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-       model: "claude-sonnet-4-5",
+        model: "claude-sonnet-4-5",
         max_tokens: 4000,
-        messages: [
-          {
-            role: "user",
-            content: `Write a short beautiful documentary script based on these life answers: ${JSON.stringify(answers)}`,
-          },
-        ],
+        messages: [{ role: "user", content: prompt }],
       }),
     });
 
     const data = await response.json();
-    
+
     if (!response.ok) {
-      console.error("Anthropic error:", JSON.stringify(data));
       return NextResponse.json({ error: JSON.stringify(data) }, { status: 500 });
     }
 
     const script = data.content[0].text;
     return NextResponse.json({ script });
   } catch (error) {
-    console.error("Caught error:", error);
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
