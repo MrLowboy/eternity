@@ -12,6 +12,7 @@ export default function Home() {
         <div className="flex gap-8 text-xs tracking-widest uppercase text-[#d4aa5a]/60">
           <a href="#how" className="hover:text-[#d4aa5a] transition-colors">How it works</a>
           <Link href="/pricing" className="hover:text-[#d4aa5a] transition-colors">Pricing</Link>
+          <Link href="/faq" className="hover:text-[#d4aa5a] transition-colors">FAQ</Link>
           <a href="#waitlist" className="hover:text-[#d4aa5a] transition-colors">Join waitlist</a>
           <Link href="/login" className="hover:text-[#d4aa5a] transition-colors text-[#d4aa5a]">Sign in</Link>
         </div>
@@ -78,6 +79,7 @@ export default function Home() {
         <div className="font-serif text-sm tracking-widest uppercase text-[#d4aa5a]/30">Eternity</div>
         <div className="flex gap-6 text-xs tracking-widest uppercase text-[#f5ede0]/20">
           <Link href="/pricing" className="hover:text-[#d4aa5a]/40 transition-colors">Pricing</Link>
+          <Link href="/faq" className="hover:text-[#d4aa5a]/40 transition-colors">FAQ</Link>
           <Link href="/login" className="hover:text-[#d4aa5a]/40 transition-colors">Sign in</Link>
           <Link href="/signup" className="hover:text-[#d4aa5a]/40 transition-colors">Sign up</Link>
         </div>
