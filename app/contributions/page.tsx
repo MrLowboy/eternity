@@ -3,8 +3,16 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 
+interface Contribution {
+  id: string;
+  contributor_name: string;
+  contributor_email: string;
+  message: string;
+  created_at: string;
+}
+
 export default function Contributions() {
-  const [contributions, setContributions] = useState([]);
+  const [contributions, setContributions] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -65,7 +73,7 @@ export default function Contributions() {
               onClick={() => router.push("/dashboard")}
               className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
             >
-              Go back to dashboard →
+              Go back to dashboard
             </button>
           </div>
         )}

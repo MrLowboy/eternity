@@ -3,12 +3,28 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 
+interface User {
+  id: string;
+  email: string;
+  created_at: string;
+  hasQuestionnaire: boolean;
+  contributionCount: number;
+}
+
+interface Contribution {
+  id: string;
+  owner_id: string;
+  contributor_name: string;
+  contributor_email: string;
+  created_at: string;
+}
+
 export default function Admin() {
-  const [users, setUsers] = useState([]);
-  const [contributions, setContributions] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [contributions, setContributions] = useState<Contribution[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,7 +59,6 @@ export default function Admin() {
 
   const totalUsers = users.length;
   const totalWithQuestionnaire = users.filter((u) => u.hasQuestionnaire).length;
-  const totalWithContributions = users.filter((u) => u.contributionCount > 0).length;
 
   return (
     <main className="min-h-screen bg-[#0d0b08] text-[#f5ede0]">
@@ -71,7 +86,6 @@ export default function Admin() {
 
         {!loading && (
           <>
-            {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
               <div className="border border-[#d4aa5a]/20 rounded-sm p-6">
                 <div className="font-serif text-4xl text-[#e8c87a] mb-1">{totalUsers}</div>
@@ -87,7 +101,6 @@ export default function Admin() {
               </div>
             </div>
 
-            {/* Search */}
             <div className="mb-8">
               <input
                 type="text"
@@ -98,7 +111,6 @@ export default function Admin() {
               />
             </div>
 
-            {/* Users list */}
             <div className="mb-12">
               <p className="text-xs tracking-widest uppercase text-[#d4aa5a]/60 mb-6">
                 Users ({filteredUsers.length})
@@ -131,22 +143,9 @@ export default function Admin() {
                           {user.contributionCount > 0 ? `${user.contributionCount} contributions` : "No contributions"}
                         </span>
                       </div>
-
-                      {/* Expanded user details */}
                       {selectedUser?.id === user.id && (
                         <div className="mt-4 pt-4 border-t border-[#d4aa5a]/10">
                           <div className="text-xs text-[#f5ede0]/40 mb-2">User ID: {user.id}</div>
-                          <div className="flex gap-3 mt-3">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                router.push(`/admin/user?id=${user.id}`);
-                              }}
-                              className="text-xs tracking-widest uppercase text-[#d4aa5a]/60 hover:text-[#d4aa5a] transition-colors"
-                            >
-                              View full profile
-                            </button>
-                          </div>
                         </div>
                       )}
                     </div>
@@ -155,7 +154,6 @@ export default function Admin() {
               )}
             </div>
 
-            {/* Recent contributions */}
             <div className="mb-12">
               <p className="text-xs tracking-widest uppercase text-[#d4aa5a]/60 mb-6">
                 Recent contributions

@@ -3,8 +3,17 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 
+interface FileItem {
+  name: string;
+  url: string;
+  source: string;
+  isImage: boolean;
+  isVideo: boolean;
+  isAudio: boolean;
+}
+
 export default function Gallery() {
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<FileItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const router = useRouter();
@@ -29,7 +38,7 @@ export default function Gallery() {
           sortBy: { column: "created_at", order: "desc" },
         });
 
-      const allFiles = [];
+      const allFiles: FileItem[] = [];
 
       if (ownFiles) {
         for (const file of ownFiles) {
@@ -38,7 +47,7 @@ export default function Gallery() {
             .from("Memories")
             .getPublicUrl(`${user.id}/${file.name}`);
           allFiles.push({
-            ...file,
+            name: file.name,
             url: urlData.publicUrl,
             source: "mine",
             isImage: /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name),
@@ -54,7 +63,7 @@ export default function Gallery() {
             .from("Memories")
             .getPublicUrl(`${user.id}/contributions/${file.name}`);
           allFiles.push({
-            ...file,
+            name: file.name,
             url: urlData.publicUrl,
             source: "family",
             isImage: /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name),
@@ -105,7 +114,6 @@ export default function Gallery() {
           Your <em className="text-[#e8c87a]">gallery</em>
         </h1>
 
-        {/* Tabs */}
         <div className="flex gap-1 mb-10 border-b border-[#d4aa5a]/15">
           {tabs.map((tab) => (
             <button

@@ -62,12 +62,12 @@ const chapters = [
 
 export default function Questionnaire() {
   const [chapter, setChapter] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
 
-  function handleAnswer(question, value) {
+  function handleAnswer(question: string, value: string) {
     setAnswers((prev) => ({ ...prev, [question]: value }));
   }
 

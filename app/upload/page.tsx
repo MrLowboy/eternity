@@ -4,13 +4,12 @@ import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 
 export default function Upload() {
-  const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
 
-  async function handleUpload(e) {
-    const selectedFiles = Array.from(e.target.files);
+  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const selectedFiles = Array.from(e.target.files || []) as File[];
     setUploading(true);
     setMessage("");
 
@@ -89,7 +88,7 @@ export default function Upload() {
             onClick={() => router.push("/questionnaire")}
             className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
           >
-            Continue to questionnaire →
+            Continue to questionnaire
           </button>
         </div>
       </section>

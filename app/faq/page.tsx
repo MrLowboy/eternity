@@ -46,7 +46,7 @@ const faqs = [
     questions: [
       {
         q: "What does the documentary actually look like?",
-        a: "Our AI reads your life story answers and all your uploaded memories, then crafts a cinematic documentary script — complete with an opening narration, six chapters covering your life, and a closing that ties your story together. The script is written to be read as a narrator would speak it.",
+        a: "Our AI reads your life story answers and all your uploaded memories, then crafts a cinematic documentary script — complete with an opening narration, six chapters covering your life, and a closing that ties your story together.",
       },
       {
         q: "How long does it take to generate my documentary?",
@@ -103,9 +103,9 @@ const faqs = [
 ];
 
 export default function FAQ() {
-  const [openQuestion, setOpenQuestion] = useState(null);
+  const [openQuestion, setOpenQuestion] = useState<string | null>(null);
 
-  function toggle(id) {
+  function toggle(id: string) {
     setOpenQuestion(openQuestion === id ? null : id);
   }
 

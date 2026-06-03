@@ -3,8 +3,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { useRouter } from "next/navigation";
 
+interface UserType {
+  id: string;
+  email?: string;
+}
+
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
 
@@ -26,7 +31,7 @@ export default function Dashboard() {
   }
 
   function copyInviteLink() {
-    const link = `${window.location.origin}/contribute?id=${user.id}`;
+    const link = `${window.location.origin}/contribute?id=${user!.id}`;
     navigator.clipboard.writeText(link);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -57,7 +62,6 @@ export default function Dashboard() {
           Begin building your documentary by uploading your memories and telling us your story.
         </p>
 
-        {/* Main steps */}
         <div className="grid grid-cols-1 gap-4 mb-8">
           <div
             onClick={() => router.push("/upload")}
@@ -102,7 +106,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick links */}
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div
             onClick={() => router.push("/gallery")}
@@ -123,7 +126,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Invite section */}
         <div className="border border-[#d4aa5a]/20 rounded-sm p-6 bg-[#d4aa5a]/5">
           <div className="font-serif text-lg text-[#f5ede0] mb-1">Invite family and friends</div>
           <div className="text-xs text-[#f5ede0]/40 mb-4">
