@@ -57,6 +57,7 @@ export default function Dashboard() {
           Begin building your documentary by uploading your memories and telling us your story.
         </p>
 
+        {/* Main steps */}
         <div className="grid grid-cols-1 gap-4 mb-8">
           <div
             onClick={() => router.push("/upload")}
@@ -98,6 +99,27 @@ export default function Dashboard() {
               </div>
               <div className="ml-auto text-[#d4aa5a]/30 text-xl">→</div>
             </div>
+          </div>
+        </div>
+
+        {/* Quick links */}
+        <div className="grid grid-cols-2 gap-4 mb-8">
+          <div
+            onClick={() => router.push("/gallery")}
+            className="border border-[#d4aa5a]/15 rounded-sm p-4 hover:border-[#d4aa5a]/40 transition-colors cursor-pointer text-center"
+          >
+            <div className="text-[#d4aa5a] text-2xl mb-2">🖼</div>
+            <div className="font-serif text-sm text-[#f5ede0] mb-1">View gallery</div>
+            <div className="text-xs text-[#f5ede0]/30">See your uploaded memories</div>
+          </div>
+
+          <div
+            onClick={() => router.push("/contributions")}
+            className="border border-[#d4aa5a]/15 rounded-sm p-4 hover:border-[#d4aa5a]/40 transition-colors cursor-pointer text-center"
+          >
+            <div className="text-[#d4aa5a] text-2xl mb-2">💌</div>
+            <div className="font-serif text-sm text-[#f5ede0] mb-1">View contributions</div>
+            <div className="text-xs text-[#f5ede0]/30">Memories from loved ones</div>
           </div>
         </div>
 
