@@ -19,6 +19,8 @@ export default function Generate() {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [script, setScript] = useState("");
   const [error, setError] = useState("");
+  const [audioUrl, setAudioUrl] = useState("");
+  const [generatingAudio, setGeneratingAudio] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function Generate() {
     setGenerating(true);
     setError("");
     setScript("");
+    setAudioUrl("");
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -72,6 +75,32 @@ export default function Generate() {
     setGenerating(false);
   }
 
+  async function handleGenerateNarration() {
+    setGeneratingAudio(true);
+    setError("");
+
+    const response = await fetch("/api/narration", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ script }),
+    });
+
+    const result = await response.json();
+
+    if (result.error) {
+      setError(result.error);
+    } else {
+      const audioBlob = new Blob(
+        [Uint8Array.from(atob(result.audio), (c) => c.charCodeAt(0))],
+        { type: result.contentType }
+      );
+      const url = URL.createObjectURL(audioBlob);
+      setAudioUrl(url);
+    }
+
+    setGeneratingAudio(false);
+  }
+
   return (
     <main className="min-h-screen bg-[#0d0b08] text-[#f5ede0]">
       <nav className="flex items-center justify-between px-10 py-6 border-b border-[#d4aa5a]/20">
@@ -100,7 +129,7 @@ export default function Generate() {
             onClick={handleGenerate}
             className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-8 py-4 rounded-sm hover:opacity-90 transition-opacity"
           >
-            Generate my documentary →
+            Generate my documentary
           </button>
         )}
 
@@ -122,7 +151,7 @@ export default function Generate() {
 
         {script && (
           <div className="mt-8">
-            <div className="border border-[#d4aa5a]/20 rounded-sm p-8">
+            <div className="border border-[#d4aa5a]/20 rounded-sm p-8 mb-6">
               <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-6">
                 Your Documentary Script
               </p>
@@ -130,12 +159,46 @@ export default function Generate() {
                 {script}
               </div>
             </div>
-            <div className="mt-6 flex gap-4">
+
+            <div className="border border-[#d4aa5a]/20 rounded-sm p-6 mb-6 bg-[#d4aa5a]/5">
+              <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-2">
+                Step 2 — Generate narration
+              </p>
+              <p className="text-sm text-[#f5ede0]/40 mb-4">
+                Convert your script into a warm cinematic voiceover using AI.
+              </p>
+
+              {!audioUrl && (
+                <button
+                  onClick={handleGenerateNarration}
+                  disabled={generatingAudio}
+                  className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                >
+                  {generatingAudio ? "Generating narration..." : "Generate narration"}
+                </button>
+              )}
+
+              {audioUrl && (
+                <div>
+                  <p className="text-xs text-[#d4aa5a]/60 mb-3">Your narration is ready:</p>
+                  <audio controls src={audioUrl} className="w-full mb-3" />
+                  <a
+                    href={audioUrl}
+                    download="eternity-narration.mp3"
+                    className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
+                  >
+                    Download narration
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-4">
               <button
                 onClick={handleGenerate}
                 className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
               >
-                Regenerate
+                Regenerate script
               </button>
               <button
                 onClick={() => router.push("/dashboard")}
