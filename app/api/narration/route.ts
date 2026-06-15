@@ -24,9 +24,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error }, { status: 500 });
     }
     const audioBuffer = await response.arrayBuffer();
-    const base64Audio = Buffer.from(audioBuffer).toString("base64");
-    return NextResponse.json({ audio: base64Audio, contentType: "audio/mpeg" });
-  } catch (error) {
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    const base64Audio = Buffer.from(audioBuffer).toSt    const base64Audio = Buffer.from(audioBuffe audio: base64Audio, contentType: "audio/mpeg" });
+  } catch  } catch  } catch  } catch  } catch  } catch  : String(error) }, { status: 500 });
   }
 }
