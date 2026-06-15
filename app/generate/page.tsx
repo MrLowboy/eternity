@@ -121,17 +121,15 @@ export default function Generate() {
           <p className="text-sm text-[#f5ede0]/40 mb-4">
             Convert your script into a cinematic voiceover using AI.
           </p>
-          {!audioUrl && (
-            <button
-              onClick={handleGenerateNarration}
-              disabled={generatingAudio}
-              className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-            >
-              {generatingAudio ? "Generating..." : "Generate narration"}
-            </button>
-          )}
+ <button
+            onClick={handleGenerateNarration}
+            disabled={generatingAudio}
+            className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+          >
+            {generatingAudio ? "Generating..." : "Generate narration"}
+          </button>
           {audioUrl && (
-            <div>
+            <div className="mt-4">
               <p className="text-xs text-[#d4aa5a]/60 mb-3">Your narration is ready:</p>
               <audio controls src={audioUrl} className="w-full mb-3" />
               
