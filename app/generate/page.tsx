@@ -53,7 +53,7 @@ export default function Generate() {
       .single();
 
     if (error || !data) {
-      setError("Please complete the questionnaire first.");
+      setError(`Please complete the questionnaire first. (Debug: ${error?.message || "no data found"})`);
       setGenerating(false);
       return;
     }
@@ -121,7 +121,7 @@ export default function Generate() {
           Your <em className="text-[#e8c87a]">documentary</em>
         </h1>
         <p className="text-[#f5ede0]/40 text-sm leading-relaxed mb-12">
-          Claude will read your life story and the memories shared by your loved ones to craft a cinematic documentary script just for you.
+          Claude will read your life story and craft a cinematic documentary script just for you.
         </p>
 
         {!script && !generating && (
@@ -140,7 +140,7 @@ export default function Generate() {
               {loadingMessage}
             </p>
             <p className="text-xs text-[#f5ede0]/20 tracking-widest uppercase">
-              This takes about a minute — your story deserves care
+              This takes about a minute
             </p>
           </div>
         )}
@@ -162,27 +162,25 @@ export default function Generate() {
 
             <div className="border border-[#d4aa5a]/20 rounded-sm p-6 mb-6 bg-[#d4aa5a]/5">
               <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-2">
-                Step 2 — Generate narration
+                Step 2 - Generate narration
               </p>
               <p className="text-sm text-[#f5ede0]/40 mb-4">
-                Convert your script into a warm cinematic voiceover using AI.
+                Convert your script into a cinematic voiceover using AI.
               </p>
-
               {!audioUrl && (
                 <button
                   onClick={handleGenerateNarration}
                   disabled={generatingAudio}
                   className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
-                  {generatingAudio ? "Generating narration..." : "Generate narration"}
+                  {generatingAudio ? "Generating..." : "Generate narration"}
                 </button>
               )}
-
               {audioUrl && (
                 <div>
                   <p className="text-xs text-[#d4aa5a]/60 mb-3">Your narration is ready:</p>
                   <audio controls src={audioUrl} className="w-full mb-3" />
-                  <a
+                  
                     href={audioUrl}
                     download="eternity-narration.mp3"
                     className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
