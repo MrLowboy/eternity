@@ -179,7 +179,7 @@ export default function Generate() {
               {audioUrl && (
                 <div>
                   <p className="text-xs text-[#d4aa5a]/60 mb-3">Your narration is ready:</p>
-      <audio controls src={audioUrl} className="w-full mb-3" />
+                  <audio controls src={audioUrl} className="w-full mb-3" />
                   
                     href={audioUrl}
                     download="eternity-narration.mp3"
