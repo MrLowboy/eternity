@@ -53,7 +53,7 @@ export default function Generate() {
       .single();
 
     if (error || !data) {
-      setError(`Please complete the questionnaire first. (Debug: ${error?.message || "no data found"})`);
+      setError("Please complete the questionnaire first.");
       setGenerating(false);
       return;
     }
@@ -99,6 +99,68 @@ export default function Generate() {
     }
 
     setGeneratingAudio(false);
+  }
+
+  function renderScript() {
+    if (!script) return null;
+    return (
+      <div className="mt-8">
+        <div className="border border-[#d4aa5a]/20 rounded-sm p-8 mb-6">
+          <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-6">
+            Your Documentary Script
+          </p>
+          <div className="font-serif text-lg leading-relaxed text-[#f5ede0]/80 whitespace-pre-wrap">
+            {script}
+          </div>
+        </div>
+
+        <div className="border border-[#d4aa5a]/20 rounded-sm p-6 mb-6 bg-[#d4aa5a]/5">
+          <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-2">
+            Step 2 - Generate narration
+          </p>
+          <p className="text-sm text-[#f5ede0]/40 mb-4">
+            Convert your script into a cinematic voiceover using AI.
+          </p>
+          {!audioUrl && (
+            <button
+              onClick={handleGenerateNarration}
+              disabled={generatingAudio}
+              className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {generatingAudio ? "Generating..." : "Generate narration"}
+            </button>
+          )}
+          {audioUrl && (
+            <div>
+              <p className="text-xs text-[#d4aa5a]/60 mb-3">Your narration is ready:</p>
+              <audio controls src={audioUrl} className="w-full mb-3" />
+              
+                href={audioUrl}
+                download="eternity-narration.mp3"
+                className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
+              >
+                Download narration
+              </a>
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-4">
+          <button
+            onClick={handleGenerate}
+            className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
+          >
+            Regenerate script
+          </button>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
+          >
+            Back to dashboard
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -149,64 +211,7 @@ export default function Generate() {
           <p className="text-red-400/80 text-sm mt-6">{error}</p>
         )}
 
-        {script && (
-          <div className="mt-8">
-            <div className="border border-[#d4aa5a]/20 rounded-sm p-8 mb-6">
-              <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-6">
-                Your Documentary Script
-              </p>
-              <div className="font-serif text-lg leading-relaxed text-[#f5ede0]/80 whitespace-pre-wrap">
-                {script}
-              </div>
-            </div>
-
-            <div className="border border-[#d4aa5a]/20 rounded-sm p-6 mb-6 bg-[#d4aa5a]/5">
-              <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-2">
-                Step 2 - Generate narration
-              </p>
-              <p className="text-sm text-[#f5ede0]/40 mb-4">
-                Convert your script into a cinematic voiceover using AI.
-              </p>
-              {!audioUrl && (
-                <button
-                  onClick={handleGenerateNarration}
-                  disabled={generatingAudio}
-                  className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
-                >
-                  {generatingAudio ? "Generating..." : "Generate narration"}
-                </button>
-              )}
-              {audioUrl && (
-                <div>
-                  <p className="text-xs text-[#d4aa5a]/60 mb-3">Your narration is ready:</p>
-                  <audio controls src={audioUrl} className="w-full mb-3" />
-                  
-                    href={audioUrl}
-                    download="eternity-narration.mp3"
-                    className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
-                  >
-                    Download narration
-                  </a>
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-4">
-              <button
-                onClick={handleGenerate}
-                className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
-              >
-                Regenerate script
-              </button>
-              <button
-                onClick={() => router.push("/dashboard")}
-                className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors"
-              >
-                Back to dashboard
-              </button>
-            </div>
-          </div>
-        )}
+        {renderScript()}
       </section>
     </main>
   );
