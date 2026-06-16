@@ -123,6 +123,7 @@ export default function Generate() {
     const { data: files } = await supabase.storage
       .from("Memories")
       .list(user.id, { limit: 20 });
+    console.log("Files:", JSON.stringify(files));
     const photos = (files || [])
       .filter((f) => f.name.match(/\.(jpg|jpeg|png|webp)$/i))
       .map((f) => `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/Memories/${user.id}/${f.name}`);
