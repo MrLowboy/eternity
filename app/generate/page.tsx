@@ -20,9 +20,12 @@ export default function Generate() {
   const [script, setScript] = useState("");
   const [error, setError] = useState("");
   const [audioUrl, setAudioUrl] = useState("");
+  const [audioBase64, setAudioBase64] = useState("");
   const [generatingAudio, setGeneratingAudio] = useState(false);
+  const [creatingVideo, setCreatingVideo] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+  const [renderId, setRenderId] = useState("");
   const router = useRouter();
-
   useEffect(() => {
     if (!generating) return;
     let index = 0;
@@ -34,11 +37,30 @@ export default function Generate() {
     return () => clearInterval(interval);
   }, [generating]);
 
+  useEffect(() => {
+    if (!renderId) return;
+    const interval = setInterval(async () => {
+      const response = await fetch(`/api/video-status?renderId=${renderId}`);
+      const data = await response.json();
+      if (data.status === "succeeded") {
+        setVideoUrl(data.url);
+        setCreatingVideo(false);
+        clearInterval(interval);
+      } else if (data.status === "failed") {
+        setError("Video rendering failed. Please try again.");
+        setCreatingVideo(false);
+        clearInterval(interval);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [renderId]);
   async function handleGenerate() {
     setGenerating(true);
     setError("");
     setScript("");
     setAudioUrl("");
+    setVideoUrl("");
+    setRenderId("");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/login");
@@ -85,10 +107,43 @@ export default function Generate() {
         { type: result.contentType }
       );
       setAudioUrl(URL.createObjectURL(audioBlob));
+      setAudioBase64(result.audio);
     }
     setGeneratingAudio(false);
   }
 
+  async function handleCreateVideo() {
+    setCreatingVideo(true);
+    setError("");
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    const { data: files } = await supabase.storage
+      .from("Memories")
+      .list(user.id, { limit: 20 });
+    const photos = (files || [])
+      .filter((f) => f.name.match(/\.(jpg|jpeg|png|webp)$/i))
+      .map((f) => `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/Memories/${user.id}/${f.name}`);
+    if (photos.length === 0) {
+      setError("Please upload some photos first.");
+      setCreatingVideo(false);
+      return;
+    }
+    const response = await fetch("/api/video", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ audioBase64, photos, script }),
+    });
+    const result = await response.json();
+    if (result.error) {
+      setError(result.error);
+      setCreatingVideo(false);
+    } else {
+      setRenderId(result.renderId);
+    }
+  }
   return (
     <main className="min-h-screen bg-[#0d0b08] text-[#f5ede0]">
       <nav className="flex items-center justify-between px-10 py-6 border-b border-[#d4aa5a]/20">
@@ -163,6 +218,44 @@ export default function Generate() {
                 </div>
               )}
             </div>
+            {audioUrl && (
+              <div className="border border-[#d4aa5a]/20 rounded-sm p-6 mb-6 bg-[#d4aa5a]/5">
+                <p className="text-xs tracking-widest uppercase text-[#d4aa5a] mb-2">
+                  Step 3 - Create your video
+                </p>
+                <p className="text-sm text-[#f5ede0]/40 mb-4">
+                  Combine your photos and narration into a cinematic documentary.
+                </p>
+                {!videoUrl && (
+                  <button
+                    onClick={handleCreateVideo}
+                    disabled={creatingVideo}
+                    className="bg-gradient-to-r from-[#d4aa5a] to-[#c49040] text-[#0d0b08] text-xs font-medium tracking-widest uppercase px-6 py-3 rounded-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                  >
+                    {creatingVideo ? "Creating your documentary..." : "Create video"}
+                  </button>
+                )}
+                {creatingVideo && (
+                  <p className="text-xs text-[#f5ede0]/40 mt-3">
+                    This takes 2-3 minutes. Please wait...
+                  </p>
+                )}
+                {videoUrl && (
+                  <div className="mt-4">
+                    <p className="text-xs text-[#d4aa5a]/60 mb-3">Your documentary is ready:</p>
+                    <video controls src={videoUrl} className="w-full rounded-sm" />
+                    
+<a
+                      href={videoUrl}
+                      download="eternity-documentary.mp4"
+                      className="text-xs tracking-widest uppercase text-[#d4aa5a]/50 hover:text-[#d4aa5a] transition-colors mt-3 block"
+                    >
+                      Download documentary
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
             <div className="flex gap-4">
               <button
                 onClick={handleGenerate}
