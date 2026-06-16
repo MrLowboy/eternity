@@ -142,7 +142,7 @@ export default function Generate() {
     const response = await fetch("/api/video", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ audioUrl: audioStorageUrl, photos, script }),
+      body: JSON.stringify({ photos }),
     });
     const result = await response.json();
     if (result.error) {

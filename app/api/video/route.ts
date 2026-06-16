@@ -2,42 +2,30 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { audioUrl, photos, script } = await request.json();
+    const { photos } = await request.json();
 
-    if (!audioUrl || !photos || photos.length === 0) {
-      return NextResponse.json({ error: "Missing audio or photos" }, { status: 400 });
+    if (!photos || photos.length === 0) {
+      return NextResponse.json({ error: "Missing photos" }, { status: 400 });
     }
 
-    const elements: object[] = [];
-
-    // Add photos with Ken Burns effect
-    const photoDuration = Math.max(5, Math.floor(30 / photos.length));
-    photos.forEach((photoUrl: string, index: number) => {
-      elements.push({
-        type: "image",
-        source: photoUrl,
-        time: index * photoDuration,
-        duration: photoDuration + 1,
-        animations: [
-          {
-            type: "scale",
-            scope: "element",
-            easing: "linear",
-            start_scale: "100%",
-            end_scale: "110%",
-          },
-        ],
-      });
-    });
-
-    // Add narration audio
-    elements.push({
-      type: "audio",
-      source: audioUrl,
-      time: 0,
-    });
-
+    const photoDuration = Math.max(5, Math.floor(60 / photos.length));
     const totalDuration = photos.length * photoDuration;
+
+    const elements = photos.map((photoUrl: string, index: number) => ({
+      type: "image",
+      source: photoUrl,
+      time: index * photoDuration,
+      duration: photoDuration + 1,
+      animations: [
+        {
+          type: "scale",
+          scope: "element",
+          easing: "linear",
+          start_scale: "100%",
+          end_scale: "110%",
+        },
+      ],
+    }));
 
     const renderPayload = {
       source: {
