@@ -2,16 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { photos } = await request.json();
+    const { photos, audioUrl } = await request.json();
 
     if (!photos || photos.length === 0) {
       return NextResponse.json({ error: "Missing photos" }, { status: 400 });
     }
 
-    const photoDuration = Math.max(5, Math.floor(60 / photos.length));
-    const totalDuration = photos.length * photoDuration;
+    const photoDuration = 7;
+    const totalDuration = Math.max(photos.length * photoDuration, 30);
 
-    const elements = photos.map((photoUrl: string, index: number) => ({
+    const elements: object[] = photos.map((photoUrl: string, index: number) => ({
       type: "image",
       source: photoUrl,
       time: index * photoDuration,
@@ -26,6 +26,15 @@ export async function POST(request: NextRequest) {
         },
       ],
     }));
+
+    if (audioUrl) {
+      elements.push({
+        type: "audio",
+        source: audioUrl,
+        time: 0,
+        duration: totalDuration,
+      });
+    }
 
     const renderPayload = {
       source: {
