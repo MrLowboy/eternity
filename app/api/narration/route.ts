@@ -32,10 +32,14 @@ export async function POST(request: NextRequest) {
     const audioBuffer = await resp.arrayBuffer();
     const base64Audio = Buffer.from(audioBuffer).toString("base64");
 
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!serviceKey) {
+  return NextResponse.json({ error: "Missing service role key" }, { status: 500 });
+}
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  serviceKey
+);
 
     const fileName = `${userId}/${Date.now()}-narration.mp3`;
     const { error: uploadError } = await supabase.storage
