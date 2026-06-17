@@ -20,13 +20,14 @@ export async function POST(request: NextRequest) {
       ? contributions.map((c) => `${c.contributor_name}: ${c.message}`).join("\n\n")
       : "No contributions yet.";
 
-    const prompt = `You are a world class documentary filmmaker and storyteller. Based on the following life story answers and memories shared by loved ones, write a beautiful, moving documentary script.
+  const prompt = `You are a world class documentary filmmaker and storyteller. Based on the following life story answers and memories shared by loved ones, write a beautiful, moving documentary script.
+
+IMPORTANT: The script must be SHORT — exactly 2 minutes when read aloud (approximately 280-300 words total). This is a strict requirement.
 
 Structure it with:
-- An opening narration that captures the essence of their life
-- 6 chapters: Early Life, Family, Love, Career, Life Lessons, Legacy
-- Weave in the memories shared by friends and family naturally
-- A closing narration that ties everything together
+- A brief opening narration (1-2 sentences)
+- 3 key moments from their life story
+- A closing narration (1-2 sentences)
 
 Make it deeply personal, warm, and cinematic. Write it as a narrator would speak it. Use specific details from their answers.
 
@@ -36,7 +37,7 @@ ${answers}
 MEMORIES FROM LOVED ONES:
 ${contributionsText}
 
-Write the documentary script now:`;
+Write the 2-minute documentary script now (280-300 words maximum):`;
 
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -47,7 +48,7 @@ Write the documentary script now:`;
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-5",
-        max_tokens: 4000,
+        max_tokens: 1000,
         messages: [{ role: "user", content: prompt }],
       }),
     });
